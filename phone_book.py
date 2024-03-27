@@ -34,16 +34,22 @@ def err():
 
 
 def conti_save(char, name):
-    with open("phone_db.json", "r+w", encoding="UTF-8") as file:
-        records = json.load(file)
+    records = {}
+    try:
+        with open("phone_db.json", "r", encoding="UTF-8") as file:
+            records = json.load(file)
         records[name] = char[name].copy()
-        json.dump(records, file, ensure_ascii=False)
+    except Exception:
+        records[name] = char[name].copy()
+    finally:
+        with open("phone_db.json", "w", encoding="UTF-8") as file:
+            json.dump(records, file, ensure_ascii=False)
     input('\nДанные были успешно сохранены\n-> ')
 
 
 def save_data():
+    char = {'/non_data': {'phone_numb': [], 'b_date': 'non_data', 'description': 'non_data'}}
     stock = {'/non_data': {'phone_numb': [], 'b_date': 'non_data', 'description': 'non_data'}}
-    char = stock.copy()
     name = '/non_data'
     while True:
         rules_s()
@@ -73,7 +79,8 @@ def save_data():
                 input('\nВы ничего не ввели\n-> ')
             else:
                 conti_save(char, name)
-
+            char = {'/non_data': {'phone_numb': [], 'b_date': 'non_data', 'description': 'non_data'}}
+            name = '/non_data'
         elif cmd == '7':
             if stock == char:
                 return
@@ -82,6 +89,10 @@ def save_data():
                     return
         else:
             err()
+
+
+def view_all():
+    pass
 
 
 while True:
