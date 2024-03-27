@@ -48,8 +48,8 @@ def conti_save(char, name):
 
 
 def save_data():
-    char = {'/non_data': {'phone_numb': [], 'b_date': 'non_data', 'description': 'non_data'}}
-    stock = {'/non_data': {'phone_numb': [], 'b_date': 'non_data', 'description': 'non_data'}}
+    char = {'/non_data': {'phone_numb': [], 'b_date': 'Нет данных', 'description': 'Нет данных'}}
+    stock = {'/non_data': {'phone_numb': [], 'b_date': 'Нет данных', 'description': 'Нет данных'}}
     name = '/non_data'
     while True:
         rules_s()
@@ -79,7 +79,7 @@ def save_data():
                 input('\nВы ничего не ввели\n-> ')
             else:
                 conti_save(char, name)
-            char = {'/non_data': {'phone_numb': [], 'b_date': 'non_data', 'description': 'non_data'}}
+            char = {'/non_data': {'phone_numb': [], 'b_date': 'Нет данных', 'description': 'Нет данных'}}
             name = '/non_data'
         elif cmd == '7':
             if stock == char:
@@ -92,18 +92,32 @@ def save_data():
 
 
 def view_all():
-    pass
+    with open("phone_db.json", "r", encoding="UTF-8") as show_file:
+        try:
+            result = json.load(show_file)
+        except Exception:
+            input('\nТелефонный справочник еще пуст\n-> ')
+            return
+    for name, data in result.items():
+        print()
+        print('-' * 10)
+        print(f'Имя: {name}')
+        print(f'Тефон: {data['phone_numb']}')
+        print(f'Дата рожденя: {data['b_date']}')
+        print(f'Описани: {data['description']}')
+        print('-' * 10)
+    input('-> ')
 
 
 while True:
     rules()
     n = input('-> ')
     if n == '1':
-        pass
+        view_all()
     elif n == '2':
         save_data()
     elif n == '3':
-        print('Эта функция еще не реалезована')
+        print('Эта функция еще не реалезована')# я так и не понял что подразумевается под импортом
     elif n == '4':
         pass
     elif n == '5':
