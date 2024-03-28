@@ -3,26 +3,10 @@ import json
 
 # на Отлично в одного человека надо сделать консольное приложение Телефонный справочник с внешним хранилищем информации,
 # и чтоб был реализован основной функционал - просмотр, сохранение, импорт, поиск, удаление, изменение данных.
-def rules():
-    print('\n Команды работы со справочником \n'
-          '1 - просмотр всех конткактов \n'
-          '2 - создание новых конткактов \n'
-          '3 - импорт \n'
-          '4 - поиск \n'
-          '5 - редактирование данных \n'
-          '5 - остановка при уведомлениях \n'
-          '7 - завершение работы программы')
-
-
-def rules_s():
-    print('\n Список команд \n'
-          '1 - добавить или изменить имя ползователя \n'
-          '2 - добавить или изменить номера телефонов \n'
-          '3 - добавить или изменить дату рождения \n'
-          '4 - добавить или изменить описание \n'
-          '5 - вывести данные в терминале\n'
-          '6 - сохранить данные \n'
-          '7 - вернутся назад \n')
+def rules(text):
+    print('\n Список команд \n')
+    for i in range(len(text)):
+        print(f'{i + 1} - {text[i]}')
 
 
 def err():
@@ -60,12 +44,15 @@ def save_data(data):
         json.dump(data, file, ensure_ascii=False)
 
 
-def conti_save(char, name):
-    old_data = load_data()
-    old_data[name] = char[name].copy()
-    save_data(old_data)
-    print('\nДанные были успешно сохранены')
-    stop()
+def check_number():
+     return input('\nВведите номера через пробел\n!Внимание! внутри номера не должно быть пробелов\n'
+          '+7 999 999 99 99 X \n+7-999-999-99-99 V\n-> ').split()
+# def conti_save(char, name):
+#     old_data = load_data()
+#     old_data[name] = char[name].copy()
+#     save_data(old_data)
+#     print('\nДанные были успешно сохранены')
+#     stop()
 
 
 def new_data():
@@ -73,14 +60,14 @@ def new_data():
     stock = {'/non_data': {'phone_numb': [], 'b_date': 'Нет данных', 'description': 'Нет данных'}}
     name = '/non_data'
     while True:
-        rules_s()
+        rules(['добавить или изменить имя пользователя', 'добавить или изменить номера телефонов',
+               'добавить или изменить дату рождения', 'добавить или изменить описание', 'вывести данные в терминале',
+               'сохранить данные', 'вернутся назад'])
         cmd = input('-> ')
         if cmd == '1':
             char[name := input('\nВведите имя\n-> ')] = char.pop(name)
         elif cmd == '2':
-            numbers = input('\nВведите номера через прробел\n!Внимание! внутри номера не должно быть пробелов\n'
-                            '+7 999 999 99 99 X \n+7-999-999-99-99 V\n-> ').split()
-            char[name]['phone_numb'] = numbers
+            char[name]['phone_numb'] = check_number()
         elif cmd == '3':
             char[name]['b_date'] = input('\nВведите дату рождения\n-> ')
         elif cmd == '4':
@@ -116,49 +103,6 @@ def new_data():
             err()
 
 
-# def edit_contact(cmd, name, char={'/non_data': {'phone_numb': [], 'b_date': 'Нет данных', 'description': 'Нет данных'}},
-#                  stock={'/non_data': {'phone_numb': [], 'b_date': 'Нет данных', 'description': 'Нет данных'}}):
-#     if cmd == '1':
-#         char[name := input('\nВведите имя\n-> ')] = char.pop(name)
-#     elif cmd == '2':
-#         numbers = input('\nВведите номера через прробел\n!Внимание! внутри номера не должно быть пробелов\n'
-#                         '+7 999 999 99 99 X \n+7-999-999-99-99 V\n-> ').split()
-#         char[name]['phone_numb'] = numbers
-#     elif cmd == '3':
-#         char[name]['b_date'] = input('\nВведите дату рождения\n-> ')
-#     elif cmd == '4':
-#         char[name]['description'] = input('\nВведите описание контакта\n-> ')
-#     elif cmd == '5':
-#         print()
-#         print(f'Имя: {name}\nТелефон: {char[name]['phone_numb']}\nДата рождения: {char[name]['b_date']}\n'
-#               f'Описание: {char[name]['description']}')
-#         stop()
-#     elif cmd == '6':
-#         if name == '/non_data':
-#             print('\nВы не ввели имя')
-#             stop()
-#         elif len(char[name]['phone_numb']) == 0:
-#             print('\nВы не ввели номер телефона')
-#             if confirmation():
-#                 conti_save(char, name)
-#                 char, name = reset()
-#         elif stock == char:
-#             print('\nВы ничего не ввели')
-#             stop()
-#         else:
-#             conti_save(char, name)
-#             char, name = reset()
-#     elif cmd == '7':
-#         if stock == char:
-#             return
-#         else:
-#             print('\nНе сохраненые данные будут утерены')
-#             if confirmation():
-#                 return
-#     else:
-#         err()
-
-
 def view_all():
     result = load_data()
     if not result:
@@ -184,10 +128,30 @@ def edit_save(con):
 
 def edit_data():
     while True:
-        cmd = input('\nСписок команд\n1 - изменить контакт\n2 - удалить данные\n3 - вернутся назад\n-> ')
+        rules(['изменить контакт', 'удалить данные', 'вернутся назад'])
+        cmd = input('-> ')
         if cmd == '1':
             name = input("\nВведите имя контакта\n-> ")
-
+            data = load_data()
+            while True:
+                rules(["изменить имя", 'изменить номер', 'дату рождения', "описание", 'сохранить', 'вернутся назад'])
+                cmd_2 = input('-> ')
+                if cmd_2 == '1':
+                    new_name = input('\nВведите новое имя\n-> ')
+                    data[new_name] = data.pop(name)
+                    name = new_name
+                elif cmd_2 == '2':
+                    data[name]['phone_numb'] = check_number()
+                elif cmd_2 == '3':
+                    data[name]['b_date'] = input('\nВведите дату рождения\n-> ')
+                elif cmd_2 == '4':
+                    data[name]['description'] = input('\nВведите описание контакта\n-> ')
+                elif cmd_2 == '5':
+                    save_data(data)
+                elif cmd_2 == '6':
+                    break
+                else:
+                    err()
         elif cmd == '2':
             n = input("\nВведите имя контакта или /all что-бы удалить все\n-> ")
             if n == '/all' and confirmation():
@@ -214,7 +178,8 @@ setting = True
 def main():
     global setting
     while True:
-        rules()
+        rules(['просмотр всех конткактов', 'создание новых конткактов', 'импорт', 'поиск', 'редактирование данных',
+               'остановка при уведомлениях', 'завершение работы программы'])
         n = input('-> ')
         if n == '1':
             view_all()
