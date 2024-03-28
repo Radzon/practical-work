@@ -9,10 +9,8 @@ def rules():
           '2 - создание новых конткактов \n'
           '3 - импорт \n'
           '4 - поиск \n'
-          '5 - удаление данных \n'
-          '6 - изменения данных \n'
-          '7 - изменить подсказки\n'
-          '8 - завершение работы программы')
+          '5 - редактирование данных \n'
+          '6 - завершение работы программы')
 
 
 def rules_s():
@@ -33,21 +31,27 @@ def err():
     print()
 
 
-def conti_save(char, name):
-    records = {}
+def load_data():
     try:
         with open("phone_db.json", "r", encoding="UTF-8") as file:
-            records = json.load(file)
-        records[name] = char[name].copy()
-    except Exception:
-        records[name] = char[name].copy()
-    finally:
-        with open("phone_db.json", "w", encoding="UTF-8") as file:
-            json.dump(records, file, ensure_ascii=False)
+            return json.load(file)
+    except FileNotFoundError:
+        return {}
+
+
+def save_data(data):
+    with open("phone_db.json", "w", encoding="UTF-8") as file:
+        json.dump(data, file, ensure_ascii=False)
+
+
+def conti_save(char, name):
+    old_data = load_data()
+    old_data[name] = char[name].copy()
+    save_data(old_data)
     input('\nДанные были успешно сохранены\n-> ')
 
 
-def save_data():
+def new_data():
     char = {'/non_data': {'phone_numb': [], 'b_date': 'Нет данных', 'description': 'Нет данных'}}
     stock = {'/non_data': {'phone_numb': [], 'b_date': 'Нет данных', 'description': 'Нет данных'}}
     name = '/non_data'
@@ -92,21 +96,35 @@ def save_data():
 
 
 def view_all():
-    with open("phone_db.json", "r", encoding="UTF-8") as show_file:
-        try:
-            result = json.load(show_file)
-        except Exception:
-            input('\nТелефонный справочник еще пуст\n-> ')
-            return
-    for name, data in result.items():
-        print()
-        print('-' * 10)
-        print(f'Имя: {name}')
-        print(f'Тефон: {data['phone_numb']}')
-        print(f'Дата рожденя: {data['b_date']}')
-        print(f'Описани: {data['description']}')
-        print('-' * 10)
+    result = load_data()
+    if not result:
+        print('\nТелефонный справочник пуст\n')
+    else:
+        for name, data in result.items():
+            print()
+            print('-' * 10)
+            print(f'Имя: {name}')
+            print(f'Тефон: {data['phone_numb']}')
+            print(f'Дата рожденя: {data['b_date']}')
+            print(f'Описани: {data['description']}')
+            print('-' * 10)
     input('-> ')
+
+
+def delite_data():
+    rul = '\n Список команд\n1 - удалить один контакт\n2 - удалить все данные\n3 - сохранить\n4 - вернутся назад'
+    while True:
+        cmd = input(rul)
+        if cmd == '1':
+            pass
+        elif cmd == '2':
+            pass
+        elif cmd == '3':
+            pass
+        elif cmd == '4':
+            pass
+        else:
+            err()
 
 
 while True:
@@ -123,10 +141,6 @@ while True:
     elif n == '5':
         pass
     elif n == '6':
-        pass
-    elif n == '7':
-        pass
-    elif n == '8':
         break
     else:
         err()
