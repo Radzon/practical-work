@@ -10,7 +10,8 @@ def rules():
           '3 - импорт \n'
           '4 - поиск \n'
           '5 - редактирование данных \n'
-          '6 - завершение работы программы')
+          '5 - остановка при уведомлениях \n'
+          '7 - завершение работы программы')
 
 
 def rules_s():
@@ -25,10 +26,25 @@ def rules_s():
 
 
 def err():
-    print("\n Такой команды не существует \n"
-          "нажмите Enter что-бы продолжить")
-    input('-> ')
-    print()
+    print("\n Такой команды не существует")
+    stop()
+
+
+def stop():
+    if setting:
+        input('Enter что-бы продолжить\n-> ')
+
+
+def confirmation():
+    a = input('\nПродолжить?\n1 - Продолжить\n2 - Отмена\n-> ')
+    if a == '1':
+        return True
+    else:
+        return False
+
+
+def reset():
+    return {'/non_data': {'phone_numb': [], 'b_date': 'Нет данных', 'description': 'Нет данных'}}, '/non_data'
 
 
 def load_data():
@@ -48,7 +64,8 @@ def conti_save(char, name):
     old_data = load_data()
     old_data[name] = char[name].copy()
     save_data(old_data)
-    input('\nДанные были успешно сохранены\n-> ')
+    print('\nДанные были успешно сохранены')
+    stop()
 
 
 def new_data():
@@ -72,27 +89,74 @@ def new_data():
             print()
             print(f'Имя: {name}\nТелефон: {char[name]['phone_numb']}\nДата рождения: {char[name]['b_date']}\n'
                   f'Описание: {char[name]['description']}')
-            input('Enter что-бы продолжить\n-> ')
+            stop()
         elif cmd == '6':
             if name == '/non_data':
-                input('\nВы не ввели имя\n-> ')
+                print('\nВы не ввели имя')
+                stop()
             elif len(char[name]['phone_numb']) == 0:
-                if input('\nВы не ввели номер телефона\n1 - Все равно сохранить\n2 - Отмена\n-> ') == '1':
+                print('\nВы не ввели номер телефона')
+                if confirmation():
                     conti_save(char, name)
+                    char, name = reset()
             elif stock == char:
-                input('\nВы ничего не ввели\n-> ')
+                print('\nВы ничего не ввели')
+                stop()
             else:
                 conti_save(char, name)
-            char = {'/non_data': {'phone_numb': [], 'b_date': 'Нет данных', 'description': 'Нет данных'}}
-            name = '/non_data'
+                char, name = reset()
         elif cmd == '7':
             if stock == char:
                 return
             else:
-                if input('\nНе сохраненые данные будут утерены\nПродолжить?\n1 - Продолжить\n2 - Отмена\n-> ') == '1':
+                print('\nНе сохраненые данные будут утерены')
+                if confirmation():
                     return
         else:
             err()
+
+
+# def edit_contact(cmd, name, char={'/non_data': {'phone_numb': [], 'b_date': 'Нет данных', 'description': 'Нет данных'}},
+#                  stock={'/non_data': {'phone_numb': [], 'b_date': 'Нет данных', 'description': 'Нет данных'}}):
+#     if cmd == '1':
+#         char[name := input('\nВведите имя\n-> ')] = char.pop(name)
+#     elif cmd == '2':
+#         numbers = input('\nВведите номера через прробел\n!Внимание! внутри номера не должно быть пробелов\n'
+#                         '+7 999 999 99 99 X \n+7-999-999-99-99 V\n-> ').split()
+#         char[name]['phone_numb'] = numbers
+#     elif cmd == '3':
+#         char[name]['b_date'] = input('\nВведите дату рождения\n-> ')
+#     elif cmd == '4':
+#         char[name]['description'] = input('\nВведите описание контакта\n-> ')
+#     elif cmd == '5':
+#         print()
+#         print(f'Имя: {name}\nТелефон: {char[name]['phone_numb']}\nДата рождения: {char[name]['b_date']}\n'
+#               f'Описание: {char[name]['description']}')
+#         stop()
+#     elif cmd == '6':
+#         if name == '/non_data':
+#             print('\nВы не ввели имя')
+#             stop()
+#         elif len(char[name]['phone_numb']) == 0:
+#             print('\nВы не ввели номер телефона')
+#             if confirmation():
+#                 conti_save(char, name)
+#                 char, name = reset()
+#         elif stock == char:
+#             print('\nВы ничего не ввели')
+#             stop()
+#         else:
+#             conti_save(char, name)
+#             char, name = reset()
+#     elif cmd == '7':
+#         if stock == char:
+#             return
+#         else:
+#             print('\nНе сохраненые данные будут утерены')
+#             if confirmation():
+#                 return
+#     else:
+#         err()
 
 
 def view_all():
@@ -108,41 +172,68 @@ def view_all():
             print(f'Дата рожденя: {data['b_date']}')
             print(f'Описани: {data['description']}')
             print('-' * 10)
-    input('-> ')
+    stop()
 
 
-def delite_data():
-    rul = '\n Список команд\n1 - удалить один контакт\n2 - удалить все данные\n3 - сохранить\n4 - вернутся назад'
+def edit_save(con):
+    try:
+        save_data(con)
+    except Exception:
+        input("Еще не было изменений")
+
+
+def edit_data():
     while True:
-        cmd = input(rul)
+        cmd = input('\nСписок команд\n1 - изменить контакт\n2 - удалить данные\n3 - вернутся назад\n-> ')
         if cmd == '1':
-            pass
+            name = input("\nВведите имя контакта\n-> ")
+
         elif cmd == '2':
-            pass
+            n = input("\nВведите имя контакта или /all что-бы удалить все\n-> ")
+            if n == '/all' and confirmation():
+                edit_save({})
+            else:
+                con = load_data()
+                if n not in con:
+                    print("\nТакого контакта еще нет")
+                    stop()
+                elif confirmation():
+                    del con[n]
+                    edit_save(con)
+                    print('Удалено')
+                    stop()
         elif cmd == '3':
-            pass
-        elif cmd == '4':
-            pass
+            return
         else:
             err()
 
 
-while True:
-    rules()
-    n = input('-> ')
-    if n == '1':
-        view_all()
-    elif n == '2':
-        save_data()
-    elif n == '3':
-        print('Эта функция еще не реалезована')# я так и не понял что подразумевается под импортом
-    elif n == '4':
-        pass
-    elif n == '5':
-        pass
-    elif n == '6':
-        break
-    else:
-        err()
+setting = True
 
-print('\n Работа программы прекращена')
+
+def main():
+    global setting
+    while True:
+        rules()
+        n = input('-> ')
+        if n == '1':
+            view_all()
+        elif n == '2':
+            new_data()
+        elif n == '3':
+            print('Эта функция еще не реалезована')# я так и не понял что подразумевается под импортом
+        elif n == '4':
+            pass
+        elif n == '5':
+            edit_data()
+        elif n == '6':
+            setting = not setting
+            print('Настройки изменены')
+        elif n == '7':
+            break
+        else:
+            err()
+    print('\n Работа программы прекращена')
+
+
+main()
