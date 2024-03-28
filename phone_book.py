@@ -45,14 +45,16 @@ def save_data(data):
 
 
 def check_number():
-     return input('\nВведите номера через пробел\n!Внимание! внутри номера не должно быть пробелов\n'
-          '+7 999 999 99 99 X \n+7-999-999-99-99 V\n-> ').split()
-# def conti_save(char, name):
-#     old_data = load_data()
-#     old_data[name] = char[name].copy()
-#     save_data(old_data)
-#     print('\nДанные были успешно сохранены')
-#     stop()
+    return input('\nВведите номера через пробел\n!Внимание! внутри номера не должно быть пробелов\n'
+                 '+7 999 999 99 99 X \n+7-999-999-99-99 V\n-> ').split()
+
+
+def conti_save(char, name):
+    old_data = load_data()
+    old_data[name] = char[name].copy()
+    save_data(old_data)
+    print('\nДанные были успешно сохранены')
+    stop()
 
 
 def new_data():
@@ -96,7 +98,7 @@ def new_data():
             if stock == char:
                 return
             else:
-                print('\nНе сохраненые данные будут утерены')
+                print('\nНе сохраненные данные будут утеряны')
                 if confirmation():
                     return
         else:
@@ -112,9 +114,9 @@ def view_all():
             print()
             print('-' * 10)
             print(f'Имя: {name}')
-            print(f'Тефон: {data['phone_numb']}')
-            print(f'Дата рожденя: {data['b_date']}')
-            print(f'Описани: {data['description']}')
+            print(f'Телефон: {data['phone_numb']}')
+            print(f'Дата рождения: {data['b_date']}')
+            print(f'Описание: {data['description']}')
             print('-' * 10)
     stop()
 
@@ -178,7 +180,7 @@ setting = True
 def main():
     global setting
     while True:
-        rules(['просмотр всех конткактов', 'создание новых конткактов', 'импорт', 'поиск', 'редактирование данных',
+        rules(['просмотр всех контактов', 'создание новых контактов', 'импорт', 'поиск', 'редактирование данных',
                'остановка при уведомлениях', 'завершение работы программы'])
         n = input('-> ')
         if n == '1':
@@ -186,7 +188,7 @@ def main():
         elif n == '2':
             new_data()
         elif n == '3':
-            print('Эта функция еще не реалезована')# я так и не понял что подразумевается под импортом
+            print('Эта функция еще не реализована')# я так и не понял что подразумевается под импортом
         elif n == '4':
             pass
         elif n == '5':
@@ -201,4 +203,5 @@ def main():
     print('\n Работа программы прекращена')
 
 
-main()
+if __name__ == "__main__":
+    main()
