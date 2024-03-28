@@ -1,8 +1,6 @@
 import json
 
 
-# на Отлично в одного человека надо сделать консольное приложение Телефонный справочник с внешним хранилищем информации,
-# и чтоб был реализован основной функционал - просмотр, сохранение, импорт, поиск, удаление, изменение данных.
 def rules(text):
     print('\n Список команд \n')
     for i in range(len(text)):
@@ -35,13 +33,13 @@ def load_data():
     try:
         with open("phone_db.json", "r", encoding="UTF-8") as file:
             return json.load(file)
-    except FileNotFoundError:
+    except Exception:
         return {}
 
 
 def save_data(data):
     with open("phone_db.json", "w", encoding="UTF-8") as file:
-        json.dump(data, file, ensure_ascii=False)
+        json.dump(data, file, ensure_ascii=False, indent=4)
 
 
 def check_number():
@@ -105,19 +103,29 @@ def new_data():
             err()
 
 
-def view_all():
+def show_data(name, data):
+    print()
+    print('-' * 10)
+    print(f'Имя: {name}')
+    print(f'Телефон: {data['phone_numb']}')
+    print(f'Дата рождения: {data['b_date']}')
+    print(f'Описание: {data['description']}')
+    print('-' * 10)
+
+
+def view_all(name=''):
     result = load_data()
     if not result:
         print('\nТелефонный справочник пуст\n')
+    elif name != '':
+        if name in result:
+            result = result[name]
+            show_data(name, result)
+        else:
+            print('\nТакого человека нет в справочнике')
     else:
         for name, data in result.items():
-            print()
-            print('-' * 10)
-            print(f'Имя: {name}')
-            print(f'Телефон: {data['phone_numb']}')
-            print(f'Дата рождения: {data['b_date']}')
-            print(f'Описание: {data['description']}')
-            print('-' * 10)
+            show_data(name, data)
     stop()
 
 
@@ -190,7 +198,8 @@ def main():
         elif n == '3':
             print('Эта функция еще не реализована')# я так и не понял что подразумевается под импортом
         elif n == '4':
-            pass
+            name = input("\nВведите имя контакта\n-> ")
+            view_all(name)
         elif n == '5':
             edit_data()
         elif n == '6':
