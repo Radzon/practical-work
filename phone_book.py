@@ -29,9 +29,9 @@ def reset():
     return {'/non_data': {'phone_numb': [], 'b_date': 'Нет данных', 'description': 'Нет данных'}}, '/non_data'
 
 
-def load_data():
+def load_data(file_name="phone_db.json"):
     try:
-        with open("phone_db.json", "r", encoding="UTF-8") as file:
+        with open(file_name, "r", encoding="UTF-8") as file:
             return json.load(file)
     except Exception:
         return {}
@@ -196,7 +196,12 @@ def main():
         elif n == '2':
             new_data()
         elif n == '3':
-            print('Эта функция еще не реализована')# я так и не понял что подразумевается под импортом
+            file_way = input('\nНапишите путь до импортируемого файла\n-> ')
+            try:
+                for i in load_data(file_way):
+                    save_data(i)
+            except Exception:
+                print('Что-то пошло не так при открытии файла')
         elif n == '4':
             name = input("\nВведите имя контакта\n-> ")
             view_all(name)
