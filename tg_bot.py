@@ -3,28 +3,46 @@ from telebot import types
 
 
 with open('C:/Users/Admin/Desktop/tg_token.txt', encoding="UTF-8") as file_in:
-    token = file_in.read().strip()
+    API_TOKEN = file_in.read().strip()
 
-bot = telebot.TeleBot(token)
+bot = telebot.TeleBot(API_TOKEN)
 
+SELECT_ACTION, SELECT_JOB, SELECT_TECHNOLOGY, MAIN_MENU = range(4)
 
-@bot.message_handler(content_types=['photo'])
-def get_photo(message):
-    markup = types.InlineKeyboardMarkup()
-    btn1 = types.InlineKeyboardButton('Перейти на сайт', url='https://google.com')
-    markup.row(btn1)
-    btn2 = types.InlineKeyboardButton('Удалить фото', callback_data='delete')
-    btn3 = types.InlineKeyboardButton('Изменить текст', callback_data='edit')
-    markup.row(btn2, btn3)
-    bot.reply_to(message, 'Классное фото!', reply_markup=markup)
+# Клавиатура для выбора действия
+markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+markup.row('Устройство на работу', 'Изучение новых технологий')
+markup.row('Покупка оборудования', 'Работа над проектами')
+markup.row('Участие в событиях', 'Развитие карьеры')
+markup.row('Достижения')
 
 
-@bot.callback_query_handler(func=lambda callback: True)
-def callback_massage(callback):
-    if callback.data == 'delete':
-        bot.delete_message(callback.message.chat.id, callback.message.message_id - 1)
-    elif callback.data == 'edit':
-        bot.edit_message_text('Edit text', callback.message.chat.id, callback.message.message_id)
+# Обработчик команды /start
+@bot.message_handler(commands=['start'])
+def start(message):
+    bot.send_message(message.chat.id,
+                     f"Привет, {message.from_user.first_name}! Добро пожаловать в игру Code tycoon!\n"
+                     "Выберите действие:",
+                     reply_markup=markup)
+    bot.register_next_step_handler(message, select_action)
 
 
-bot.infinity_polling()
+# Обработчик действий
+def select_action(message):
+    text = message.text
+    if text == 'Устройство на работу':
+        bot.send_message(message.chat.id, "Выберите, в какую компанию хотите устроиться:",
+                         reply_markup=types.ReplyKeyboardRemove())
+        bot.register_next_step_handler(message, select_job)
+    elif text == 'Изучение новых технологий':
+        bot.send_message(message.chat.id, "Выберите технологию, которую хотите изучить:")
+        bot.register_next_step_handler(message, select_technology)
+    # Другие действия обрабатываются аналогично
+
+
+def main():
+    bot.polling()
+
+
+if __name__ == '__main__':
+    main()
