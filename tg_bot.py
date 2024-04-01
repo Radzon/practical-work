@@ -15,10 +15,10 @@ class Player:
         self.salary = 0
 
     def gain_experience(self, exp):
-        temp = exp
-        while temp >= self.score:
+        self.experience += exp
+        while self.experience >= self.score:
+            self.experience -= self.score
             self.level_up()
-        self.experience += temp
         return exp
 
     def give_money(self, m):
@@ -26,7 +26,7 @@ class Player:
 
     def level_up(self):
         self.level += 1
-        self.score *= 2
+        self.score *= 1.5
 
     def new_job(self, comp, sal):
         self.job = comp
