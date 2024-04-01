@@ -114,6 +114,7 @@ def select_action(message, user):
         else:
             bot.send_message(message.chat.id, f"Вы заработали:\n{user.do_work()} доларов\n"
                                               f"{user.gain_experience(company[user.get_job()][2])} опыта")
+        bot.register_next_step_handler(message, select_action, user)
     elif text == 'Устроится на работу':
         bot.send_message(message.chat.id, "Выберите, в какую компанию хотите устроиться:"
                                           "\nNeuroCodex - Минимальный уровень: 1 | Зарплата: 150$"
@@ -127,7 +128,7 @@ def select_action(message, user):
         bot.register_next_step_handler(message, select_job, user)
     elif text == 'Статус':
         bot.send_message(message.chat.id, user.get_player_info())
-    bot.register_next_step_handler(message, select_action, user)
+        bot.register_next_step_handler(message, select_action, user)
 
 
 def select_job(message, user):
