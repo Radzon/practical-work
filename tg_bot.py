@@ -15,9 +15,11 @@ class Player:
         self.salary = 0
 
     def gain_experience(self, exp):
-        while exp >= self.score:
+        temp = exp
+        while temp >= self.score:
             self.level_up()
-        self.experience += exp
+        self.experience += temp
+        return exp
 
     def give_money(self, m):
         self.money += m
@@ -45,7 +47,8 @@ class Player:
     def get_job(self):
         return self.job
 
-    def get_salary(self):
+    def do_work(self):
+        self.money += self.salary
         return self.salary
 
     def get_player_info(self):
@@ -79,8 +82,9 @@ markup_jobs.row('DigitalFusion', 'CyberSpires')
 markup_jobs.row('HyperTech', 'Solutions')
 markup_jobs.row('InnovaTechnosis')
 
-company = {'NeuroCodex': [1, 150], 'VirtuoSphere': [3, 200], 'DigitalFusion': [5, 350],
-           'CyberSpires': [8, 500], 'HyperTech': [8, 500], 'Solutions': [15, 900], 'InnovaTechnosis': [20, 1500]}
+company = {'NeuroCodex': [1, 150, 50], 'VirtuoSphere': [3, 200, 200], 'DigitalFusion': [5, 350, 400],
+           'CyberSpires': [8, 500, 800], 'HyperTech': [8, 500, 1600], 'Solutions': [15, 900, 3200],
+           'InnovaTechnosis': [20, 1500, 10000]}
 
 
 @bot.message_handler(commands=['start'])
@@ -108,7 +112,8 @@ def select_action(message, user):
         if user.get_job() == 'Нет работы':
             bot.send_message(message.chat.id, "Вы вы еще не устроились на работу")
         else:
-            bot.send_message(message.chat.id, f"Вы заработали:\n{user.get_salary()} доларов\n100 опыта")
+            bot.send_message(message.chat.id, f"Вы заработали:\n{user.do_work()} доларов\n"
+                                              f"{user.gain_experience(company[user.get_job()][2])} опыта")
     elif text == 'Устроится на работу':
         bot.send_message(message.chat.id, "Выберите, в какую компанию хотите устроиться:"
                                           "\nNeuroCodex - Минимальный уровень: 1 | Зарплата: 150$"
